@@ -28,5 +28,6 @@ export async function connect(configDB: DBconfig) {
   const connect = new Sequelize(config)
   connect.addModels([Answer, CompletedTest, Question, Test, User, UserAnswer, UserToken])
   await connect.sync()
+  
   return connect;
 } 
