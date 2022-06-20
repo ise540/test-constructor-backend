@@ -5,6 +5,7 @@ import "dotenv/config";
 import cors from 'cors';
 import router from './routes'
 import cookieParser from 'cookie-parser'
+import error from './middlewares/error';
 
 const PORT = process.env.PORT || 8080;
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(cookieParser())
 app.use(express.json());
 app.use('/api', router)
+app.use(error)
 
 
 

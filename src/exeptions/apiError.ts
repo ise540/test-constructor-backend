@@ -9,6 +9,7 @@ export class ApiError extends Error {
     return new ApiError(401, 'Not Authorized');
   }
 
+
   static badRequest(message: string) {
     return new ApiError(500, message)
   }
