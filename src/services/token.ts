@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import { UserToken } from '../models/UserToken';
 
 class TokenService {
-  async generateTokens(payload: string) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '1h' });
+  async generateTokens(payload: {}) {
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '30m' });
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, { expiresIn: '30d' });
     return {
       accessToken,

@@ -11,7 +11,7 @@ class UserService {
     }
     const hashPassword = await bcrypt.hash(password, 4);
     const user = await User.create({ email, password: hashPassword, isActivated: false, activationLink: uuidv4() });
-    const tokens = await TokenService.generateTokens(user.email);
+    const tokens = await TokenService.generateTokens({email:user.email, isActivated: user.isActivated, });
     await TokenService.saveToken(user.id, tokens.refreshToken)
 
     return {
