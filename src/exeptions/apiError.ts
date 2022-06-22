@@ -11,8 +11,11 @@ export class ApiError extends Error {
     return new ApiError(401, 'Not Authorized');
   }
 
-
   static badRequest(message: string,  errors?: ValidationError[]) {
     return new ApiError(500, message, errors)
+  }
+
+  static notFound(message: string) {
+    return new ApiError(404, `${message} not Found`)
   }
 }

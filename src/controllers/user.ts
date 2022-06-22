@@ -32,10 +32,10 @@ class UserController {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      const {refreshToken} = req.cookies;
+      const { refreshToken } = req.cookies;
       const token = await UserService.logout(refreshToken);
       res.clearCookie('refreshToken');
-      return res.json(token)
+      return res.json(token);
     } catch (e) {
       next(e);
     }
@@ -43,6 +43,10 @@ class UserController {
 
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
+      const { refreshToken } = req.cookies;
+      const userData = await UserService.refresh(refreshToken);
+      res.cookie('refreshToken', userData.refreshToken, { maxAge: 2592000000, httpOnly: true });
+      return res.json(userData);
     } catch (e) {
       next(e);
     }

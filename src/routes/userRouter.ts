@@ -13,9 +13,9 @@ router.post(
 router.post('/login', UserController.login);
 
 router.post('/logout', UserController.logout);
-router.get('/refresh', (req, res) => {
-  res.json('ssds');
-});
+
+router.post('/refresh', UserController.refresh);
+
 router.get('/activate/:link', UserController.activate);
 router.post('/password', (req, res) => {
   res.json('ssds');

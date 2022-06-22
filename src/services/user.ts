@@ -5,7 +5,7 @@ import TokenService from './token';
 import MailService from './mail';
 import { ApiError } from '../exeptions/apiError';
 import { UserDto } from '../dtos/userDto';
-import token from './token';
+import type { JwtPayload } from 'jsonwebtoken';
 
 class UserService {
   async registration(email: string, password: string) {
@@ -52,13 +52,36 @@ class UserService {
 
     return {
       ...tokens,
-      user:userDto
+      user: userDto
     };
   }
 
-  async logout(refreshToken:string) {
-    const token = await TokenService.removeToken(refreshToken)
+  async logout(refreshToken: string) {
+    const token = await TokenService.removeToken(refreshToken);
     return token;
+  }
+
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw ApiError.unauthorizedError();
+    }
+    const userData = (await TokenService.validateRefreshToken(refreshToken)) as JwtPayload;
+    const tokenFromDb = await TokenService.findToken(refreshToken);
+    if (!userData || !tokenFromDb) {
+      throw ApiError.unauthorizedError();
+    }
+    const user = await User.findByPk(userData.id);
+
+    if (!user) throw ApiError.notFound('User');
+
+    const userDto = new UserDto(user);
+    const tokens = await TokenService.generateTokens({ ...userDto });
+    await TokenService.saveToken(userDto.id, tokens.refreshToken);
+
+    return {
+      ...tokens,
+      user: userDto
+    };
   }
 }
 
