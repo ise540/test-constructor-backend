@@ -30,6 +30,10 @@ class MailService {
             `
         })
     }
+
+    async sendResetPasswordMail(email:string) {
+        
+    }
 }
 
 export default new MailService();

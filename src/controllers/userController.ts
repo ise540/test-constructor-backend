@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import UserService from '../services/user';
+import UserService from '../services/userService';
 import { validationResult } from 'express-validator';
 import { ApiError } from '../exeptions/apiError';
 
@@ -64,6 +64,8 @@ class UserController {
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
+      const { email } = req.body;
+      
     } catch (e) {
       next(e);
     }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import UserController from '../controllers/user';
+import UserController from '../controllers/userController';
 import { body } from 'express-validator';
 
 const router = Router();
@@ -17,8 +17,7 @@ router.post('/logout', UserController.logout);
 router.post('/refresh', UserController.refresh);
 
 router.get('/activate/:link', UserController.activate);
-router.post('/password', (req, res) => {
-  res.json('ssds');
-});
+
+router.post('/password', UserController.resetPassword);
 
 export default router;

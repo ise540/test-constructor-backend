@@ -1,8 +1,8 @@
 import { User } from '../models/User';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import TokenService from './token';
-import MailService from './mail';
+import TokenService from './tokenService';
+import MailService from './mailService';
 import { ApiError } from '../exeptions/apiError';
 import { UserDto } from '../dtos/userDto';
 import type { JwtPayload } from 'jsonwebtoken';
