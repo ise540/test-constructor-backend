@@ -1,14 +1,8 @@
-import {
-  Column,
-  Model,
-  Table,
-  Sequelize,
-  DataType
-} from 'sequelize-typescript';
+import { Column, Model, Table, Sequelize, DataType } from 'sequelize-typescript';
 import type { Optional } from 'sequelize/types';
 import type { UserSchema } from '../types/UserSchema';
 
-type UserAttributesCreation = Optional<UserSchema, 'id'>;
+type UserAttributesCreation = Optional<UserSchema, 'id' | 'resetPassLink'>;
 
 @Table
 export class User extends Model<UserSchema, UserAttributesCreation> {
@@ -27,4 +21,8 @@ export class User extends Model<UserSchema, UserAttributesCreation> {
   @Column isActivated: boolean;
 
   @Column activationLink: string;
+
+  @Column({ defaultValue: null,
+    type: DataType.STRING, })
+  resetPassLink: string | null;
 }

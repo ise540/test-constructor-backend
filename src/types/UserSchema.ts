@@ -4,4 +4,5 @@ export type UserSchema = {
   password: string;
   isActivated: boolean;
   activationLink: string;
+  resetPassLink: string | null;
 };

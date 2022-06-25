@@ -20,4 +20,7 @@ router.get('/activate/:link', UserController.activate);
 
 router.post('/password', UserController.resetPassword);
 
+router.post('/password/:link', UserController.setNewPassword);
+
+
 export default router;

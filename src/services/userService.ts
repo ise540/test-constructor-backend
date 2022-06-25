@@ -14,7 +14,13 @@ class UserService {
       throw ApiError.badRequest('Email is already taken');
     }
     const hashPassword = await bcrypt.hash(password, 4);
-    const user = await User.create({ email, password: hashPassword, isActivated: false, activationLink: uuidv4() });
+    const user = await User.create({
+      email,
+      password: hashPassword,
+      isActivated: false,
+      activationLink: uuidv4(),
+      resetPassLink: ''
+    });
     await MailService.sendActivationMail(user.email, `${process.env.API_URL}/api/user/activate/${user.activationLink}`);
     const userDto = new UserDto(user);
     const tokens = await TokenService.generateTokens({ ...userDto });
@@ -82,6 +88,33 @@ class UserService {
       ...tokens,
       user: userDto
     };
+  }
+
+  async resetPassword(email: string) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw ApiError.notFound('User');
+    }
+    user.resetPassLink = uuidv4();
+    await user.save();
+    await MailService.sendResetPasswordMail(
+      user.email,
+      `${process.env.API_URL}/api/user/password/${user.resetPassLink}`
+    );
+    const userDto = new UserDto(user);
+    return userDto;
+  }
+
+  async setNewPassword(resetPassLink:string, newPassword:string) {
+    const user = await User.findOne({ where: { resetPassLink } });
+    if (!user) {
+      throw ApiError.notFound('User');
+    }
+    const hashPassword = await bcrypt.hash(newPassword, 4);
+    user.password = hashPassword;
+    await user.save();
+    const userDto = new UserDto(user);
+    return userDto;
   }
 }
 

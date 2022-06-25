@@ -20,7 +20,7 @@ class MailService {
         await this.transporter.sendMail({
             from: SMTP_USER,
             to: email,
-            subject: 'Активация аккаунта на ' + process.env.API_URL,
+            subject: 'Активация аккаунта на ' + process.env.API_URL,  //ПОМЕНЯТЬ АДРЕС 
             text: '',
             html:
             `<div>
@@ -31,8 +31,19 @@ class MailService {
         })
     }
 
-    async sendResetPasswordMail(email:string) {
-        
+    async sendResetPasswordMail(email:string, link:string) {
+        await this.transporter.sendMail({
+            from: SMTP_USER,
+            to: email,
+            subject: 'Восстановление пароля на ' + process.env.API_URL, //ПОМЕНЯТЬ АДРЕС 
+            text: '',
+            html:
+            `<div>
+                <h1>для восстановления пароля перейдите по ссылке</h1>
+                <a href="${link}">${link}</a>
+            </div>
+            `
+        })
     }
 }
 

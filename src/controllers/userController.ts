@@ -56,7 +56,7 @@ class UserController {
     try {
       const activationLink = req.params.link;
       await UserService.activate(activationLink);
-      return res.redirect(process.env.API_URL as string);
+      return res.redirect(process.env.API_URL as string); //ЗАМЕНИТЬ ССЫЛКУ
     } catch (e) {
       next(e);
     }
@@ -65,7 +65,18 @@ class UserController {
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.body;
-      
+      const userDto = await UserService.resetPassword(email);
+      res.send(userDto);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async setNewPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const resetPassLink = req.params.link;
+      const userDto = await UserService.setNewPassword(resetPassLink, req.body.password);
+      res.send(userDto);
     } catch (e) {
       next(e);
     }
