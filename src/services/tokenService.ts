@@ -3,7 +3,7 @@ import { UserToken } from '../models/UserToken';
 
 class TokenService {
   async generateTokens(payload: {}) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '30m' });
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, { expiresIn: '30d' });
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, { expiresIn: '30d' });
     return {
       accessToken,
@@ -31,6 +31,8 @@ class TokenService {
       const userData = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET as string);
       return userData;
     } catch (e) {
+      console.log(process.env.JWT_ACCESS_SECRET)
+      console.log(e)
       return null;
     }
   }

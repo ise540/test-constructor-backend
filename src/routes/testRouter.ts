@@ -1,14 +1,14 @@
 import { Router } from "express";
-// import TestsController from "../controllers/test";
+import TestController from "../controllers/testController";
 
-// const router = Router();
+const router = Router();
 
-// router.post('/', TestsController.create)
-// router.get('/', (req, res) => {res.json("ssds")})
-// router.get('/:id', (req, res) => {res.json("ssds")})
-// router.put('/', (req, res) => {res.json("ssds")})
-// router.delete('/:id', (req, res) => {res.json("ssds")})
-// router.get('/completed', (req, res) => {res.json("ssds")})
-// router.get('/completed/:id', (req, res) => {res.json("ssds")})
+router.post('/', TestController.create)
+router.get('/', TestController.getAll)
+router.get('/:id', TestController.getById)
+router.put('/', TestController.update)
+router.delete('/:id', TestController.delete)
+router.get('/completed', TestController.getAllComplited)
+router.get('/completed/:id', TestController.getComplitedById)
 
-// export default router;
+export default router;

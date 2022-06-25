@@ -33,6 +33,4 @@ export class Test extends Model<TestSchema, TestAttributesCreation> {
   authorId: string;
   @BelongsTo(()=>User)
   user: User
-
-  @CreatedAt @Column createdAt: string;
 }
