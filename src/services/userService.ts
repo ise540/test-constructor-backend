@@ -112,6 +112,7 @@ class UserService {
     }
     const hashPassword = await bcrypt.hash(newPassword, 4);
     user.password = hashPassword;
+    user.resetPassLink = null;
     await user.save();
     const userDto = new UserDto(user);
     return userDto;
