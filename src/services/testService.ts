@@ -1,20 +1,34 @@
 import { ApiError } from '../exeptions/apiError';
+import { Answer } from '../models/Answer';
+import { Question } from '../models/Question';
 import { Test } from '../models/Test';
 
 class TestService {
-  async create(title: string, userId: string) {
+  async create(title: string, questionsList: Question[], userId: string) {
     const test = await Test.create({ title, authorId: userId });
-    console.log(test);
+    questionsList.forEach((question) => (question.testId = test.id));
+    const questions = await Question.bulkCreate(questionsList);
+    
+    for (let i = 0; i < questions.length; i++) {
+      questionsList[i].answers.forEach((answer) => {
+        answer.questionId = questions[i].id;
+      });
+    }
+    
+    for(let question of questionsList) {
+      await Answer.bulkCreate(question.answers)
+    }
+
     return test;
   }
 
   async getAll(userId: string) {
-    const testList = await Test.findAll({ where: { authorId: userId } });
+    const testList = await Test.findAll({ where: { authorId: userId }, include: Question });
     return testList ?? [];
   }
 
   async getById(testId: string, userId: string) {
-    const test = await Test.findOne({ where: { id: testId, authorId: userId } });
+    const test = await Test.findOne({ where: { id: testId, authorId: userId }, include: Question });
     return test;
   }
 

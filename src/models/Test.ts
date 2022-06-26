@@ -1,15 +1,7 @@
-import {
-  Column,
-  Model,
-  Table,
-  Sequelize,
-  DataType,
-  ForeignKey,
-  CreatedAt,
-  BelongsTo
-} from 'sequelize-typescript';
+import { Column, Model, Table, Sequelize, DataType, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import type { Optional } from 'sequelize/types';
 import type { TestSchema } from '../types/TestSchema';
+import { Question } from './Question';
 import { User } from './User';
 
 type TestAttributesCreation = Optional<TestSchema, 'id'>;
@@ -31,6 +23,9 @@ export class Test extends Model<TestSchema, TestAttributesCreation> {
     type: DataType.UUID
   })
   authorId: string;
-  @BelongsTo(()=>User)
-  user: User
+  @BelongsTo(() => User)
+  user: User;
+
+  @HasMany(() => Question)
+  questions: Question[];
 }

@@ -4,9 +4,9 @@ import TestService from '../services/testService';
 class TestController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { title } = req.body;
+      const { title, questions } = req.body;
       const user = req.user;
-      const test = await TestService.create(title, user.id);
+      const test = await TestService.create(title, questions, user.id);
       return res.json(test);
     } catch (e) {
       next(e);

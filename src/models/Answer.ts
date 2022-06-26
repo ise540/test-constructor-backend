@@ -24,7 +24,7 @@ export class Answer extends Model<AnswerSchema, AnswerAttributesCreation> {
   @Column({
     type: DataType.UUID
   })
-  qustionId: string;
+  questionId: string;
   @BelongsTo(() => Question)
   test: Question;
 }

@@ -1,6 +1,7 @@
-import { Column, Model, Table, Sequelize, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, Sequelize, DataType, HasMany } from 'sequelize-typescript';
 import type { Optional } from 'sequelize/types';
 import type { UserSchema } from '../types/UserSchema';
+import { Test } from './Test';
 
 type UserAttributesCreation = Optional<UserSchema, 'id' | 'resetPassLink'>;
 
@@ -25,4 +26,7 @@ export class User extends Model<UserSchema, UserAttributesCreation> {
   @Column({ defaultValue: null,
     type: DataType.STRING, })
   resetPassLink: string | null;
+
+  @HasMany(() => Test)
+  tests: Test[];
 }
