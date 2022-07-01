@@ -2,6 +2,7 @@ import { Column, Model, Table, Sequelize, DataType, ForeignKey, BelongsTo } from
 import type { Optional } from 'sequelize/types';
 import type { UserAnswerSchema } from '../types/UserAnswerSchema';
 import { Answer } from './Answer';
+import { Test } from './Test';
 import { User } from './User';
 
 type UserAnswersAttributesCreation = Optional<UserAnswerSchema, 'id'>;
@@ -23,6 +24,14 @@ export class UserAnswer extends Model<UserAnswerSchema, UserAnswersAttributesCre
   userId: string;
   @BelongsTo(() => User)
   user: User;
+
+  @ForeignKey(() => Test)
+  @Column({
+    type: DataType.UUID
+  })
+  testId: string;
+  @BelongsTo(() => Test)
+  test: Test;
 
   @ForeignKey(() => Answer)
   @Column({
