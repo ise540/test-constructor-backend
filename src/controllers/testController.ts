@@ -5,8 +5,8 @@ class TestController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { title, questions } = req.body;
-      const user = req.user;
-      const test = await TestService.create(title, questions, user.id);
+      const userId = req.user.id;
+      const test = await TestService.create(title, questions, userId);
       return res.json(test);
     } catch (e) {
       next(e);
@@ -15,8 +15,8 @@ class TestController {
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = req.user;
-      const tests = await TestService.getAll(user.id)
+      const userId = req.user.id;
+      const tests = await TestService.getAll(userId)
       return res.json(tests)
     } catch (e) {
       next(e);
@@ -26,8 +26,8 @@ class TestController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
         const testId = req.params.id
-        const user = req.user;
-        const test = await TestService.getById(testId, user.id)
+        const userId = req.user.id;
+        const test = await TestService.getById(testId, userId)
         return res.json(test)
     } catch (e) {
       next(e);
@@ -37,8 +37,8 @@ class TestController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
         const {id, ...data} = req.body;
-        const user = req.user;
-        const updatedTest = await TestService.update(id, user.id, data)
+        const userId = req.user.id;
+        const updatedTest = await TestService.update(id, userId, data)
         return res.json(updatedTest)
     } catch (e) {
       next(e);
@@ -58,6 +58,9 @@ class TestController {
 
   async getAllComplited(req: Request, res: Response, next: NextFunction) {
     try {
+      const userId = req.user.id;
+      const completedTestsList = await TestService.getAllCompletedTests(userId)
+      return res.json(completedTestsList)
     } catch (e) {
       next(e);
     }
@@ -65,10 +68,15 @@ class TestController {
 
   async getComplitedById(req: Request, res: Response, next: NextFunction) {
     try {
+      const testId = req.params.id
+      const userId = req.user.id;
+      const completedTest = await TestService.getCompletedTestById(testId, userId)
+      return res.json(completedTest)
     } catch (e) {
       next(e);
     }
   }
+
 }
 
 export default new TestController();

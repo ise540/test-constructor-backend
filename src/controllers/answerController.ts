@@ -7,8 +7,8 @@ class AnwerController {
       const { testId, answerId, value, isLast } = req.body;
       const userId = req.user.id;
       const answer = await answerService.sendAnswer(userId, testId, answerId, value);
-      if(isLast) {
-        const answerList = await answerService.getResult(userId, testId)
+      if (isLast) {
+        const answerList = await answerService.submitTestAnswers(userId, testId);
         return res.json(answerList);
       }
       return res.json(answer);
@@ -17,7 +17,7 @@ class AnwerController {
     }
   }
 
-  async getAnwers(req: Request, res: Response, next: NextFunction) {
+  async getTestAnwers(req: Request, res: Response, next: NextFunction) {
     try {
       const testId = req.params.testId;
       const userId = req.user.id;
