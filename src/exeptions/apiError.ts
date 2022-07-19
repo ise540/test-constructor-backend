@@ -12,7 +12,7 @@ export class ApiError extends Error {
   }
 
   static badRequest(message: string,  errors?: ValidationError[]) {
-    return new ApiError(500, message, errors)
+    return new ApiError(400, message, errors)
   }
 
   static notFound(message: string) {

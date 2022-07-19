@@ -1,4 +1,4 @@
-import { type } from 'os';
+import answerController from '../controllers/answerController';
 import { ApiError } from '../exeptions/apiError';
 import { Answer } from '../models/Answer';
 import { CompletedTest } from '../models/CompletedTest';
@@ -59,8 +59,16 @@ class TestService {
       oldTest.save();
     }
 
+    const idListQuestionsNew = updatedTest.questions.map((item) => {
+      return item.id;
+    });
+
+    const idListQuestionsOld = oldTest.questions.map((item) => {
+      return item.id;
+    });
+
     for (let question of updatedTest.questions) {
-      if (!question.id) {
+      if (!idListQuestionsOld.includes(question.id)) {
         question.testId = oldTest.id;
         const createdQuestion = await Question.create(question);
         for (let answer of question.answers) {
@@ -69,10 +77,6 @@ class TestService {
         }
       }
     }
-
-    const idListQuestionsNew = updatedTest.questions.map((item) => {
-      return item.id;
-    });
 
     for (let question of oldTest.questions) {
       if (!idListQuestionsNew.includes(question.id)) {
@@ -87,6 +91,33 @@ class TestService {
         question.type = currentQuestion.type;
         question.order = currentQuestion.order;
         question.save();
+      }
+    }
+
+    for (let oldQuestion of oldTest.questions) {
+      for (let newQuestion of updatedTest.questions) {
+        if (oldQuestion.id === newQuestion.id) {
+          
+          const idListAnswersNew = newQuestion.answers.map((answer) => answer.id);
+          const idListAnswersOld = oldQuestion.answers.map((answer) => answer.id);
+  
+          for (let newAnswer of newQuestion.answers) {
+            if (!idListAnswersOld.includes(newAnswer.id)) {
+              await Answer.create(newAnswer);
+            }
+          }
+          for (let oldAnswer of oldQuestion.answers) {
+            if (!idListAnswersNew.includes(oldAnswer.id)) {
+              await Answer.destroy({ where: { id: oldAnswer.id } });
+            } else {
+              const updatedAnswer = newQuestion.answers.find((item) => item.id === oldAnswer.id);
+              if (!updatedAnswer) return;
+              oldAnswer.correct = updatedAnswer.correct;
+              oldAnswer.value = updatedAnswer.value;
+              oldAnswer.save();
+            }
+          }
+        }
       }
     }
 
@@ -113,12 +144,12 @@ class TestService {
   }
 
   async getAllCompletedTests(userId: string) {
-    const completedTestsList = await CompletedTest.findAll({where:{userId}})
+    const completedTestsList = await CompletedTest.findAll({ where: { userId } });
     return completedTestsList;
   }
 
-  async getCompletedTestById (testId:string, userId:string) {
-    const completedTest = await CompletedTest.findAll({where:{testId, userId}})
+  async getCompletedTestById(testId: string, userId: string) {
+    const completedTest = await CompletedTest.findAll({ where: { testId, userId } });
     return completedTest;
   }
 }

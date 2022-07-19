@@ -19,7 +19,7 @@ export default async function (req: AuthRequest, res: Response, next: NextFuncti
     return next(ApiError.unauthorizedError());
   }
   const userData = (await tokenService.validateAccessToken(accessToken)) as any;
-  if (!userData) return next(ApiError.notFound('User'));
+  if (!userData) return next(ApiError.unauthorizedError());
 
   req.user = userData;
   next();
