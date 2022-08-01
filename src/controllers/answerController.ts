@@ -4,13 +4,10 @@ import answerService from '../services/answerService';
 class AnwerController {
   async sendAnswer(req: Request, res: Response, next: NextFunction) {
     try {
-      const { testId, answerId, value, isLast } = req.body;
+      const { testId, value} = req.body;
+      const answerId = req.params.answerId;
       const userId = req.user.id;
       const answer = await answerService.sendAnswer(userId, testId, answerId, value);
-      if (isLast) {
-        const answerList = await answerService.submitTestAnswers(userId, testId);
-        return res.json(answerList);
-      }
       return res.json(answer);
     } catch (e) {
       next(e);

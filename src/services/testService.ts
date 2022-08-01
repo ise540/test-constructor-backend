@@ -1,4 +1,3 @@
-import answerController from '../controllers/answerController';
 import { ApiError } from '../exeptions/apiError';
 import { Answer } from '../models/Answer';
 import { CompletedTest } from '../models/CompletedTest';
@@ -30,7 +29,12 @@ class TestService {
     return test;
   }
 
-  async getAll(userId: string) {
+  async getAllTests() {
+    const testList = await Test.findAll();
+    return testList;
+  }
+
+  async getAllUserTests(userId: string) {
     const testList = await Test.findAll({
       where: { authorId: userId },
       include: [{ model: Question, include: [Answer] }]
@@ -43,7 +47,16 @@ class TestService {
       where: { id: testId, authorId: userId },
       include: [{ model: Question, include: [Answer] }]
     });
-    return test;
+    console.log(test);
+    const testDto = JSON.parse(JSON.stringify(test)) as Test;
+    testDto?.questions.forEach((question) => {
+      if (question.type == 'TEXT') {
+        question.answers[0].value = '';
+      }
+      question.answers.forEach((answer) => answer.correct = false);
+    });
+
+    return testDto;
   }
 
   async update(testId: string, userId: string, updatedTest: Test) {
@@ -97,10 +110,9 @@ class TestService {
     for (let oldQuestion of oldTest.questions) {
       for (let newQuestion of updatedTest.questions) {
         if (oldQuestion.id === newQuestion.id) {
-          
           const idListAnswersNew = newQuestion.answers.map((answer) => answer.id);
           const idListAnswersOld = oldQuestion.answers.map((answer) => answer.id);
-  
+
           for (let newAnswer of newQuestion.answers) {
             if (!idListAnswersOld.includes(newAnswer.id)) {
               await Answer.create(newAnswer);

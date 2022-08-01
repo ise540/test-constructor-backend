@@ -13,10 +13,19 @@ class TestController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAllTests(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tests = await TestService.getAllTests()
+      return res.json(tests)
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async getAllUserTests(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.user.id;
-      const tests = await TestService.getAll(userId)
+      const tests = await TestService.getAllUserTests(userId)
       return res.json(tests)
     } catch (e) {
       next(e);

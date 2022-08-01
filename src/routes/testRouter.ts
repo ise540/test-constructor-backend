@@ -4,7 +4,8 @@ import TestController from "../controllers/testController";
 const router = Router();
 
 router.post('/', TestController.create)
-router.get('/', TestController.getAll)
+router.get('/getAllTests', TestController.getAllTests)
+router.get('/', TestController.getAllUserTests)
 router.get('/:id', TestController.getById)
 router.put('/', TestController.update)
 router.delete('/:id', TestController.delete)

@@ -1,11 +1,44 @@
 import { Answer } from '../models/Answer';
 import { CompletedTest } from '../models/CompletedTest';
+import { Question } from '../models/Question';
 import { UserAnswer } from '../models/UserAnswer';
+import { QuestionTypes } from '../types/QuestionTypes';
 
 class AnswerService {
   async sendAnswer(userId: string, testId: string, answerId: string, value: string) {
-    const answer = await UserAnswer.create({ userId, testId, answerId, value });
-    return answer;
+    const answer = await Answer.findByPk(answerId);
+    const question = await Question.findByPk(answer?.questionId);
+    console.log('=============================');
+    console.log(question);
+    console.log('=============================');
+    switch (question?.type) {
+      case QuestionTypes.CHECKBOX: {
+        const previousAnswer = await UserAnswer.findOne({ where: { answerId } });
+        if (!previousAnswer) {
+          await UserAnswer.create({ userId, testId, answerId, value, questionId: question.id });
+        } else {
+          await UserAnswer.destroy({ where: { userId, testId, answerId } });
+        }
+        return;
+      }
+      case QuestionTypes.RADIO: {
+        await UserAnswer.destroy({ where: { userId, testId, questionId: question.id } });
+        await UserAnswer.create({ userId, testId, answerId, value, questionId: question.id });
+
+        return;
+      }
+
+      case QuestionTypes.TEXT: {
+        const currentAnswer = await UserAnswer.findOne({ where: { userId, testId, answerId } });
+        if (!currentAnswer) {
+          await UserAnswer.create({ userId, testId, answerId, value, questionId: question.id });
+        } else {
+          currentAnswer.value = value;
+          currentAnswer.save();
+          return;
+        }
+      }
+    }
   }
 
   async getAllAnswers(userId: string, testId: string) {

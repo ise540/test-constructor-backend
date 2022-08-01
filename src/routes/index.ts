@@ -8,6 +8,6 @@ const router = Router();
 
 router.use('/user', userRouter);
 router.use('/test', auth, testRouter);
-router.use('/answer', answerRouter);
+router.use('/answer', auth, answerRouter);
 
 export default router;
