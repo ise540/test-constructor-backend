@@ -24,6 +24,17 @@ class AnwerController {
       next(e);
     }
   }
+
+  async submitAnswers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { testId } = req.body;
+      const userId = req.user.id;
+      const answerList = await answerService.submit(userId, testId);
+      return res.json(answerList);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export default new AnwerController();
