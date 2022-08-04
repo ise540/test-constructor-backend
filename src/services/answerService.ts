@@ -1,6 +1,8 @@
+import { ApiError } from '../exeptions/apiError';
 import { Answer } from '../models/Answer';
 import { CompletedTest } from '../models/CompletedTest';
 import { Question } from '../models/Question';
+import { Test } from '../models/Test';
 import { UserAnswer } from '../models/UserAnswer';
 import { QuestionTypes } from '../types/QuestionTypes';
 
@@ -44,9 +46,16 @@ class AnswerService {
   }
 
   async submit(userId: string, testId: string) {
+    const lastCompleted = await CompletedTest.findOne({where:{testId, userId}})
+    if (lastCompleted) return lastCompleted
+
+    const test = await Test.findByPk(testId);
+    if (!test) return ApiError.notFound("Test")
     const userAnswerList = await this.getAllAnswers(userId, testId);
-    const completedTest = { userId, testId, right: 0, wrong: 0 };
+    const completedTest = { userId, title: test.title, testId, right: 0, wrong: 0 };
+    
     const userQuestions = [...new Set(userAnswerList.map((item) => item.questionId))];
+    
 
     for (let questionId of userQuestions) {
       const question = await Question.findByPk(questionId);

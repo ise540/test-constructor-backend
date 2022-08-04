@@ -32,7 +32,9 @@ export class CompletedTest extends Model<CompletedTestSchema, CompletedTestAttri
   @BelongsTo(() => Test)
   test: Test;
 
+  @Column title: string;
+
   @Column right: number;
-  
+
   @Column wrong: number;
 }

@@ -25,6 +25,7 @@ export async function connect(configDB: DBconfig) {
     port: configDB.port,
     dialect: 'postgres'
   }
+  
   const connect = new Sequelize(config)
   connect.addModels([Answer, CompletedTest, Question, Test, User, UserAnswer, UserToken])
   await connect.sync()

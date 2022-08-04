@@ -26,7 +26,6 @@ app.use(error)
 async function startServer() {
   try {
     await connect(config);
-    
     app.listen(PORT, () => console.log(`Server started on ${PORT}`));
   } catch (e) {
     console.log(e);

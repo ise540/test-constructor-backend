@@ -99,7 +99,7 @@ class UserService {
     await user.save();
     await MailService.sendResetPasswordMail(
       user.email,
-      `${process.env.API_URL}/api/user/password/${user.resetPassLink}`
+      `${process.env.FRONTEND_URL}/reset/${user.resetPassLink}`
     );
     const userDto = new UserDto(user);
     return userDto;
